@@ -29,22 +29,22 @@ class LoginController extends Controller
         $wechat_user_info = json_decode($user_info,1);
         $openid = $re['openid'];
         $wechat_info = DB::table('user_wechat')->where(['openid'=>$openid])->first();
-        dd($wechat_info);
+//        dd($wechat_info);
         if(!empty($wechat_info)){
             //存在,登陆
             $request->session()->put('uid',$wechat_info->uid);
-            echo "ok";
+            echo "好了";
             // return redirect('');  //主页
         }else{
             //不存在,注册,登陆
             //插入user表数据一条
-            DB::connection('mysql_cart')->beginTransaction();  //打开事物
-            $uid = DB::connection('mysql_cart')->table('user')->insertGetId([
+            DB::connection('wechat')->beginTransaction();  //打开事物
+            $uid = DB::table('user_wechat')->insertGetId([
                 'name'=>$wechat_user_info['nickname'],
                 'password'=>'',
                 'reg_time'=>time()
             ]);
-            $insert_result = DB::table('user_wechat')->insert([
+            $insert_result = DB::table('user_info')->insert([
                 'uid'=>$uid,
                 'openid'=>$openid
             ]);
