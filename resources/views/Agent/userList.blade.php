@@ -3,22 +3,27 @@
     <title>用户列表</title>
 </head>
 <body>
-    <table>
+<center>
+    <table border="1">
         <tr>
-            <td>id</td>
-            <td>name</td>
-            <td>推广码</td>
-            <td>码</td>
+            <td>uid</td>
+            <td>用户名</td>
+            <td>分享码</td>
+            <td>二维码</td>
             <td>操作</td>
         </tr>
         @foreach($info as $v)
             <tr>
-                <td>{{$info->id}}</td>
-                <td>{{$info->name}}</td>
-                <td>{{$info->id}}</td>
-                <td><a href="">生成专属二维码</a></td>
+                <td>{{$v->id}}</td>
+                <td>{{$v->name}}</td>
+                <td>{{$v->id}}</td>
+                <td><img src="{{asset($v->qrcode_url)}}" alt="" height="100" ></td>
+                <td><a href="{{url('/agent/create_qrcode')}}?uid={{$v->id}}">生成专属二维码</a></td>
             </tr>
-            @endforeach
+        @endforeach
     </table>
+</center>
+<script src="{{asset('mstore/js/jquery.min.js')}}"></script>
+
 </body>
 </html>

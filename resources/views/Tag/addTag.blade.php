@@ -1,13 +1,15 @@
 <html>
 <head>
-    <title>添加标签</title>
+    <title></title>
 </head>
 <body>
 <center>
-    <form action="{{url('/do_add_tag')}}" method="post">
+    <form action="{{url('/wechat/do_add_tag')}}" method="post">
         @csrf
-        标签名称:<input type="text" name="tag_name"><br><br><br>
-        <input type="submit" value="created">
+        标签名称：<input type="text" name="tag_name" id="">
+        <br>
+        <br>
+        <input type="submit" value="提交">
     </form>
 </center>
 </body>
