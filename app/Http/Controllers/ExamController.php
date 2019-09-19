@@ -23,7 +23,7 @@ class ExamController extends Controller
         return view('login');
     }
     public function wechat_login(){
-        $redirect_uri='http://www.blog.com/exam/code';
+        $redirect_uri='http://wm.distantplace.vip/exam/code';
         //用户同意授权，获取code
         $url='https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('APPID').'&redirect_uri='.urlencode($redirect_uri).'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
         header('Location:'.$url);

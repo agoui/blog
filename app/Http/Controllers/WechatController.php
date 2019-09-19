@@ -22,7 +22,7 @@ class WechatController extends Controller
         $data = [
             'touser'=>$openid,
             'template_id'=>'om-pww6a7u9AVMn_ExFN4BFKMw80',
-            'url'=>'http://www.blog.com',
+            'url'=>'http://wm.distantplace.vip',
             'data'=>[
                 'first'=>[
                     'value'=>'first',
