@@ -82,7 +82,7 @@ class EventController extends Controller
                 $openid_info = DB::table("user_info")->where(['openid'=>$xml_arr['FromUserName']])->first();
                 if(empty($openid_info)){
                     //没有数据，存入
-                    DB::table("wechat_openid")->insert([
+                    DB::table("user_info")->insert([
                         'openid'=>$xml_arr['FromUserName'],
                         'add_time'=>time()
                     ]);
