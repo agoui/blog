@@ -21,7 +21,7 @@ class WechatController extends Controller
         $url = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$this->tools->get_wechat_access_token();
         $data = [
             'touser'=>$openid,
-            'template_id'=>'om-pww6a7u9AVMn_ExFN4BFKMw80',
+            'template_id'=>'YBn0oqTBcJpzXNc8x9FUXfW9xCABnuc48SIC80w133g',
             'url'=>'http://wm.distantplace.vip',
             'data'=>[
                 'first'=>[

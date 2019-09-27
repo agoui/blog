@@ -75,7 +75,7 @@ class TagController extends Controller
         $data = [
             'tagid' => $req['tagid'],
             'next_openid' => ''
-        ];
+       ];
         $re = $this->tools->curl_post($url,json_encode($data));
         $result = json_decode($re,1);
         dd($result);

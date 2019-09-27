@@ -24,11 +24,6 @@ Route::get('/wechat/del_menu','MenuController@del_menu');
 
 
 
-
-
-
-
-
 /// ////////////////////////////////////////////////////////////////////////////////////////////
 Route::get('/agent/agent_list','AgentController@agent_list');
 Route::get('/agent/create_qrcode','AgentController@create_qrcode'); //创建二维码

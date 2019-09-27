@@ -45,3 +45,4 @@ class AgentController extends Controller
         return redirect('/agent/agent_list');
     }
 }
+    
