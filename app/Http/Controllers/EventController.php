@@ -18,14 +18,40 @@ class EventController extends Controller
     public function event()
     {
         $xml_string = file_get_contents('php://input');  //获取
-        $wechat_log_psth = storage_path('logs/wechat/'.date('Y-m-d').'.log');
-        file_put_contents($wechat_log_psth,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n",FILE_APPEND);
-        file_put_contents($wechat_log_psth,$xml_string,FILE_APPEND);
-        file_put_contents($wechat_log_psth,"\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n",FILE_APPEND);
+        $wechat_log_psth = storage_path('logs/wechat/' . date('Y-m-d') . '.log');
+        file_put_contents($wechat_log_psth, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n", FILE_APPEND);
+        file_put_contents($wechat_log_psth, $xml_string, FILE_APPEND);
+        file_put_contents($wechat_log_psth, "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n", FILE_APPEND);
 //        dd($xml_string);
-        $xml_obj = simplexml_load_string($xml_string,'SimpleXMLElement',LIBXML_NOCDATA);
+        $xml_obj = simplexml_load_string($xml_string, 'SimpleXMLElement', LIBXML_NOCDATA);
         $xml_arr = (array)$xml_obj;
-////        \Log::Info(json_encode($xml_arr,JSON_UNESCAPED_UNICODE));
+        \Log::Info(json_encode($xml_arr, JSON_UNESCAPED_UNICODE));
+
+
+        $openid = $xml_arr['FromUserName'];
+
+        $tools = new Tools();
+        if ($xml_arr['MsgType'] == 'event' && $xml_arr['Event'] == 'subscribe') {
+            $wx_info = DB::table('user_weixin')->where(['openid' => $openid])->first();
+            $user_info = file_get_contents('https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $tools->get_access_token() . '&openid=' . $openid . '&lang=zh_CN');
+            $u_info = json_decode($user_info, 1);
+            $name = $u_info['nickname'];
+//            dd($info);
+            if (!$wx_info) {
+                DB::table('user_weixin')->insert([
+                    'openid' => $openid,
+                    'nickname' => $u_info['nickname'],
+                    'city' => $u_info['city'],
+                    'country' => $u_info['country'],
+                    'add_time' => time()
+                ]);
+                $message = '您好，' . $name . '。当前时间为：' . date('Y-m-d H:i:s', time());
+                $xml_str = '<xml><ToUserName><![CDATA[' . $xml_arr['FromUserName'] . ']]></ToUserName><FromUserName><![CDATA[' . $xml_arr['ToUserName'] . ']]></FromUserName><CreateTime>' . time() . '</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[' . $message . ']]></Content></xml>';
+                echo $xml_str;
+            } elseif ($wx_info) {
+                $message = '欢迎回来，' . $name . '。当前时间为：' . date('Y-m-d H:i:s', time());
+                $xml_str = '<xml><ToUserName><![CDATA[' . $xml_arr['FromUserName'] . ']]></ToUserName><FromUserName><![CDATA[' . $xml_arr['ToUserName'] . ']]></FromUserName><CreateTime>' . time() . '</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[' . $message . ']]></Content></xml>';
+                echo $xml_str;
 ////        //echo $_GET['echostr'];
 ////        //业务逻辑
 ////        //签到逻辑
@@ -102,30 +128,32 @@ class EventController extends Controller
 ////        if($xml_arr['MsgType'] == 'event' && $xml_arr['Event'] == 'subscribe'){
 ////            //关注
 ////            //opnid拿到用户基本信息
-            $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->tools->get_wechat_access_token().'&openid='.$xml_arr['FromUserName'].'&lang=zh_CN';
-            $user_re = file_get_contents($url);
-            $user_info = json_decode($user_re,1);
+                $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $this->tools->get_wechat_access_token() . '&openid=' . $xml_arr['FromUserName'] . '&lang=zh_CN';
+                $user_re = file_get_contents($url);
+                $user_info = json_decode($user_re, 1);
 ////            //存入数据库
-            $db_user = DB::table("user_info")->where(['openid'=>$xml_arr['FromUserName']])->first();
-           if(empty($db_user)){
+                $db_user = DB::table("user_info")->where(['openid' => $xml_arr['FromUserName']])->first();
+                if (empty($db_user)) {
 ////                //没有数据，存入
-                DB::table("user_info")->insert([
-                    'openid'=>$xml_arr['FromUserName'],
-                    'add_time'=>time()
-                ]);
-            }
-            $message = '欢迎'.$user_info['nickname'];
-            $xml_str = '<xml><ToUserName><![CDATA['.$xml_arr['FromUserName'].']]></ToUserName><FromUserName><![CDATA['.$xml_arr['ToUserName'].']]></FromUserName><CreateTime>'.time().'</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA['.$message.']]></Content></xml>';
-            echo $xml_str;
+                    DB::table("user_info")->insert([
+                        'openid' => $xml_arr['FromUserName'],
+                        'add_time' => time()
+                    ]);
+                }
+                $message = '欢迎' . $user_info['nickname'] . 感谢你的关注;
+                $xml_str = '<xml><ToUserName><![CDATA[' . $xml_arr['FromUserName'] . ']]></ToUserName><FromUserName><![CDATA[' . $xml_arr['ToUserName'] . ']]></FromUserName><CreateTime>' . time() . '</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[' . $message . ']]></Content></xml>';
+                echo $xml_str;
 ///
 ///
 ///
-        if ($xml_arr['MsgType'] == 'event') {
-            if ($xml_arr['Event'] == 'CLICK') {
-                if ($xml_arr['EventKey'] == 'dudu') {
-                    //$message = '嘤嘤嘤';
-               $xml_in = '<xml><ToUserName><![CDATA[' . $xml_arr['FromUserName'] . ']]></ToUserName><FromUserName><![CDATA[' . $xml_arr['ToUserName'] . ']]></FromUserName><CreateTime>' . time() . '</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[' . $message . ']]></Content></xml>';
-               echo $xml_in;
+                if ($xml_arr['MsgType'] == 'event') {
+                    if ($xml_arr['Event'] == 'CLICK') {
+                        if ($xml_arr['EventKey'] == 'dudu') {
+                            $message = '欢迎' . $user_info['nickname'];
+                            $xml_in = '<xml><ToUserName><![CDATA[' . $xml_arr['FromUserName'] . ']]></ToUserName><FromUserName><![CDATA[' . $xml_arr['ToUserName'] . ']]></FromUserName><CreateTime>' . time() . '</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[' . $message . ']]></Content></xml>';
+                            echo $xml_in;
+                        }
+                    }
                 }
             }
         }
