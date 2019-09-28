@@ -48,3 +48,5 @@ Route::get('wechat/get_access_token','WechatController@get_access_token'); //获
 Route::get('/wechat/get_user_list','WechatController@get_user_list'); //获取用户列表
 Route::get('/wechat/login','LoginController@wechat_login'); //微信授权登陆
 Route::get('/wechat/code','LoginController@code'); //接收code
+Route::get('test/menu','test\SignInController@menu');
+Route::get('test/send','test\SignInController@send_message');
