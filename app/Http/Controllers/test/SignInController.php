@@ -35,8 +35,15 @@ class SignInController extends Controller
                             'name' => '搜索',
                             'url' => 'http://www.baidu.com'
                         ],
+
                     ],
                 ],
+                [
+                    "type"=> "pic_weixin",
+                    "name"=> "微信相册发图",
+                    "key"=> "rselfmenu_1_2",
+                    "sub_button"=> []
+                ]
             ],
         ];
 //        dd(json_encode($data));
@@ -91,7 +98,7 @@ class SignInController extends Controller
             $user_info = file_get_contents('https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $tools->get_access_token() . '&openid=' . $openid . '&lang=zh_CN');
             $u_info = json_decode($user_info, 1);
             $name = $u_info['nickname'];
-            dd($info);
+//            dd($info);
             if (!$wx_info) {
                 DB::table('user_weixin')->insert([
                     'openid' => $openid,
