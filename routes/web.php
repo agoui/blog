@@ -50,3 +50,19 @@ Route::get('/wechat/login','LoginController@wechat_login'); //微信授权登陆
 Route::get('/wechat/code','LoginController@code'); //接收code
 Route::get('test/menu','test\SignInController@menu');
 Route::get('test/send','test\SignInController@send_message');
+Route::get('/bin/login','BinController@login');
+
+
+
+////////////////////////////////////////////
+///
+Route::get('/admin/login','AdminController@login');
+Route::get('/admin/index','AdminController@index');
+Route::get('/admin/bangding','AdminController@bangding');
+Route::any('/admin/do_bangding','AdminController@do_bangding');
+Route::post('/admin/do_code','AdminController@do_code');
+Route::post('/admin/send_code','AdminController@send_code');
+Route::get('/admin/send_template_message','AdminController@send_template_message');
+Route::post('/admin/openid','WechatController@openid');
+Route::get('/admin/code','AdminController@code');
+Route::get('/admin/test','AdminController@test');
